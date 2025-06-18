@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lua Editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #1e1e1e;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            overflow: hidden;
+        }
+        
+        #container {
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        .monaco-editor {
+            background-color: #1e1e1e !important;
+        }
+        
+        /* Hide scrollbars but keep functionality */
+        .monaco-scrollable-element > .scrollbar {
+            opacity: 0.3;
+        }
+        
+        .monaco-scrollable-element:hover > .scrollbar {
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    <script>
+        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+
+        require(['vs/editor/editor.main'], function () {
+            const editor = monaco.editor.create(document.getElementById('container'), {
+                value: `-- Welcome to Lua Editor
+-- Start coding here...
+
+function greet(name)
+    print("Hello, " .. name .. "!")
+end
+
+greet("World")`,
+                language: 'lua',
+                theme: 'vs-dark',
+                automaticLayout: true,
+                fontSize: 14,
+                fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+                lineHeight: 20,
+                minimap: {
+                    enabled: false
+                },
+                scrollBeyondLastLine: false,
+                wordWrap: 'on',
+                renderLineHighlight: 'line',
+                selectionHighlight: false,
+                occurrencesHighlight: false,
+                renderWhitespace: 'none',
+                renderControlCharacters: false,
+                hideCursorInOverviewRuler: true,
+                overviewRulerBorder: false,
+                scrollbar: {
+                    vertical: 'auto',
+                    horizontal: 'auto',
+                    verticalScrollbarSize: 10,
+                    horizontalScrollbarSize: 10
+                },
+                padding: {
+                    top: 20,
+                    bottom: 20
+                }
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                editor.layout();
+            });
+
+            // Optional: Add keyboard shortcuts
+            editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function() {
+                // Save functionality - you can implement this
+                const code = editor.getValue();
+                console.log('Save triggered:', code);
+            });
+        });
+    </script>
+</body>
+</html>
