@@ -12,27 +12,110 @@
         }
         
         body {
-            background-color: #1e1e1e;
+            background-color: #000000;
             font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
             overflow: hidden;
+            position: relative;
+        }
+        
+        /* Matrix-style background glow */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(1200px circle at 10% 10%, rgba(0, 255, 0, 0.06) 0%, transparent 40%),
+                radial-gradient(1200px circle at 90% 90%, rgba(0, 255, 0, 0.03) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+            animation: matrixGlow 20s linear infinite alternate;
+        }
+        
+        @keyframes matrixGlow {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+            100% { opacity: 0.3; }
         }
         
         #container {
             width: 100vw;
             height: 100vh;
+            position: relative;
+            z-index: 1;
         }
         
+        /* Force Monaco to be pure black with green text */
         .monaco-editor {
-            background-color: #1e1e1e !important;
+            background: #000000 !important;
         }
         
-        /* Hide scrollbars but keep functionality */
+        .monaco-editor .view-lines,
+        .monaco-editor .view-line,
+        .monaco-editor .view-line span,
+        .monaco-editor .monaco-editor-background {
+            background: #000000 !important;
+            color: #00ff00 !important;
+        }
+        
+        /* Line numbers and gutter */
+        .monaco-editor .margin,
+        .monaco-editor .glyph-margin,
+        .monaco-editor .line-numbers {
+            background: #000000 !important;
+            color: #00ff00 !important;
+            border: none !important;
+        }
+        
+        /* Selection */
+        .monaco-editor .selected-text,
+        .monaco-editor .focused .selected-text {
+            background: rgba(0, 255, 0, 0.2) !important;
+        }
+        
+        /* Current line highlight */
+        .monaco-editor .current-line,
+        .monaco-editor .view-overlays .current-line {
+            border: none !important;
+            background: rgba(0, 255, 0, 0.05) !important;
+        }
+        
+        /* Scrollbar */
+        .monaco-editor .decorationsOverviewRuller,
+        .monaco-editor .scroll-decoration {
+            background: #00ff00 !important;
+        }
+        
+        /* Override ALL syntax highlighting to green */
+        .monaco-editor .token,
+        .monaco-editor .mtk1, .monaco-editor .mtk2, .monaco-editor .mtk3,
+        .monaco-editor .mtk4, .monaco-editor .mtk5, .monaco-editor .mtk6,
+        .monaco-editor .mtk7, .monaco-editor .mtk8, .monaco-editor .mtk9,
+        .monaco-editor .mtk10, .monaco-editor .mtk11, .monaco-editor .mtk12,
+        .monaco-editor .mtk13, .monaco-editor .mtk14, .monaco-editor .mtk15,
+        .monaco-editor .mtk16, .monaco-editor .mtk17, .monaco-editor .mtk18,
+        .monaco-editor .mtk19, .monaco-editor .mtk20 {
+            color: #00ff00 !important;
+        }
+        
+        /* Cursor styling */
+        .monaco-editor .cursor {
+            background-color: #00ff00 !important;
+            width: 2px !important;
+            opacity: 1 !important;
+            z-index: 1000 !important;
+        }
+        
+        /* Make scrollbars green */
         .monaco-scrollable-element > .scrollbar {
-            opacity: 0.3;
+            background: rgba(0, 255, 0, 0.1) !important;
         }
         
-        .monaco-scrollable-element:hover > .scrollbar {
-            opacity: 0.6;
+        .monaco-scrollable-element > .scrollbar > .slider {
+            background: rgba(0, 255, 0, 0.3) !important;
+        }
+        
+        .monaco-scrollable-element:hover > .scrollbar > .slider {
+            background: rgba(0, 255, 0, 0.6) !important;
         }
     </style>
 </head>
@@ -45,14 +128,34 @@
 
         require(['vs/editor/editor.main'], function () {
             const editor = monaco.editor.create(document.getElementById('container'), {
-                value: `-- Welcome to Lua Editor
--- Start coding here...
+                value: `-- Matrix Style Lua Editor
+-- Green text on black background
 
-function greet(name)
-    print("Hello, " .. name .. "!")
+function hack_the_matrix()
+    print("Welcome to the Matrix...")
+    return "Neo"
 end
 
-greet("World")`,
+local user = hack_the_matrix()
+print("Hello, " .. user)
+
+-- Classic Lua patterns
+local numbers = {1, 0, 1, 0, 1}
+for i, bit in ipairs(numbers) do
+    if bit == 1 then
+        print("SYSTEM ONLINE")
+    else
+        print("SYSTEM OFFLINE")
+    end
+end
+
+-- Function with multiple returns
+function get_access_codes()
+    return "ZION", "MATRIX", 2199
+end
+
+local location, system, year = get_access_codes()
+print("Location: " .. location .. " | System: " .. system .. " | Year: " .. year)`,
                 language: 'lua',
                 theme: 'vs-dark',
                 automaticLayout: true,
@@ -90,9 +193,8 @@ greet("World")`,
 
             // Optional: Add keyboard shortcuts
             editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function() {
-                // Save functionality - you can implement this
                 const code = editor.getValue();
-                console.log('Save triggered:', code);
+                console.log('Matrix code saved:', code);
             });
         });
     </script>
