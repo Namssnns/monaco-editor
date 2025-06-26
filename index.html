@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lua Editor</title>
+  <title>Lua Editor - Light Theme</title>
   <style>
     html, body, #container {
       margin: 0;
@@ -14,14 +14,18 @@
 
     body {
       font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-      background-color: #1e1e1e;
+      background-color: white;
+    }
+
+    /* Make line numbers blue */
+    .monaco-editor .margin .line-numbers {
+      color: #007acc !important; /* Visual Studio blue */
     }
   </style>
 </head>
 <body>
   <div id="container"></div>
 
-  <!-- Monaco Editor -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
   <script>
     require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
@@ -36,71 +40,57 @@ end
 local user = "Neo"
 greet(user)`,
         language: 'lua',
-        theme: 'vs-dark',
+        theme: 'vs', // Light theme
         automaticLayout: true,
         fontSize: 14,
-        fontFamily: 'Consolas, Monaco, "Courier New", monospace',
         lineHeight: 20,
-        minimap: {
-          enabled: true
-        },
+        fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+        minimap: { enabled: true },
         scrollBeyondLastLine: false,
         wordWrap: 'on',
-        renderLineHighlight: 'line',
-        selectionHighlight: false,
-        occurrencesHighlight: false,
-        renderWhitespace: 'none',
-        renderControlCharacters: false,
-        hideCursorInOverviewRuler: true,
-        overviewRulerBorder: false,
-        padding: {
-          top: 20,
-          bottom: 20
-        }
+        padding: { top: 20, bottom: 20 }
       });
 
-      // Add basic Lua autocomplete suggestions
+      // Register basic Lua autocomplete
       monaco.languages.registerCompletionItemProvider('lua', {
         provideCompletionItems: () => {
-          const suggestions = [
-            {
-              label: 'function',
-              kind: monaco.languages.CompletionItemKind.Keyword,
-              insertText: 'function ${1:name}()\n\t$0\nend',
-              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            },
-            {
-              label: 'local',
-              kind: monaco.languages.CompletionItemKind.Keyword,
-              insertText: 'local ',
-            },
-            {
-              label: 'print',
-              kind: monaco.languages.CompletionItemKind.Function,
-              insertText: 'print($1)',
-              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            },
-            {
-              label: 'if',
-              kind: monaco.languages.CompletionItemKind.Keyword,
-              insertText: 'if ${1:condition} then\n\t$0\nend',
-              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            }
+          const keywords = [
+            "and", "break", "do", "else", "elseif", "end", "false", "for", "function",
+            "goto", "if", "in", "local", "nil", "not", "or", "repeat", "return",
+            "then", "true", "until", "while"
           ];
-          return { suggestions: suggestions };
+
+          const functions = [
+            "print", "ipairs", "pairs", "next", "tonumber", "tostring", "type",
+            "table.insert", "table.remove", "math.random", "string.sub"
+          ];
+
+          const suggestions = [
+            ...keywords.map(word => ({
+              label: word,
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: word
+            })),
+            ...functions.map(fn => ({
+              label: fn,
+              kind: monaco.languages.CompletionItemKind.Function,
+              insertText: fn + '($1)',
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
+            }))
+          ];
+
+          return { suggestions };
         }
       });
 
-      // Optional: Ctrl+S logs the code
+      // Optional save shortcut
       editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function () {
         const code = editor.getValue();
-        console.log("Saved code:", code);
+        console.log("Saved Lua code:", code);
       });
 
-      // Handle window resize
-      window.addEventListener('resize', () => {
-        editor.layout();
-      });
+      // Resize handler
+      window.addEventListener('resize', () => editor.layout());
     });
   </script>
 </body>
