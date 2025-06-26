@@ -1,202 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lua Editor</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background-color: #000000;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        /* Matrix-style background glow */
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background: 
-                radial-gradient(1200px circle at 10% 10%, rgba(0, 255, 0, 0.06) 0%, transparent 40%),
-                radial-gradient(1200px circle at 90% 90%, rgba(0, 255, 0, 0.03) 0%, transparent 40%);
-            pointer-events: none;
-            z-index: 0;
-            animation: matrixGlow 20s linear infinite alternate;
-        }
-        
-        @keyframes matrixGlow {
-            0% { opacity: 0.3; }
-            50% { opacity: 0.6; }
-            100% { opacity: 0.3; }
-        }
-        
-        #container {
-            width: 100vw;
-            height: 100vh;
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* Force Monaco to be pure black with green text */
-        .monaco-editor {
-            background: #000000 !important;
-        }
-        
-        .monaco-editor .view-lines,
-        .monaco-editor .view-line,
-        .monaco-editor .view-line span,
-        .monaco-editor .monaco-editor-background {
-            background: #000000 !important;
-            color: #00ff00 !important;
-        }
-        
-        /* Line numbers and gutter */
-        .monaco-editor .margin,
-        .monaco-editor .glyph-margin,
-        .monaco-editor .line-numbers {
-            background: #000000 !important;
-            color: #00ff00 !important;
-            border: none !important;
-        }
-        
-        /* Selection */
-        .monaco-editor .selected-text,
-        .monaco-editor .focused .selected-text {
-            background: rgba(0, 255, 0, 0.2) !important;
-        }
-        
-        /* Current line highlight */
-        .monaco-editor .current-line,
-        .monaco-editor .view-overlays .current-line {
-            border: none !important;
-            background: rgba(0, 255, 0, 0.05) !important;
-        }
-        
-        /* Scrollbar */
-        .monaco-editor .decorationsOverviewRuller,
-        .monaco-editor .scroll-decoration {
-            background: #00ff00 !important;
-        }
-        
-        /* Override ALL syntax highlighting to green */
-        .monaco-editor .token,
-        .monaco-editor .mtk1, .monaco-editor .mtk2, .monaco-editor .mtk3,
-        .monaco-editor .mtk4, .monaco-editor .mtk5, .monaco-editor .mtk6,
-        .monaco-editor .mtk7, .monaco-editor .mtk8, .monaco-editor .mtk9,
-        .monaco-editor .mtk10, .monaco-editor .mtk11, .monaco-editor .mtk12,
-        .monaco-editor .mtk13, .monaco-editor .mtk14, .monaco-editor .mtk15,
-        .monaco-editor .mtk16, .monaco-editor .mtk17, .monaco-editor .mtk18,
-        .monaco-editor .mtk19, .monaco-editor .mtk20 {
-            color: #00ff00 !important;
-        }
-        
-        /* Cursor styling */
-        .monaco-editor .cursor {
-            background-color: #00ff00 !important;
-            width: 2px !important;
-            opacity: 1 !important;
-            z-index: 1000 !important;
-        }
-        
-        /* Make scrollbars green */
-        .monaco-scrollable-element > .scrollbar {
-            background: rgba(0, 255, 0, 0.1) !important;
-        }
-        
-        .monaco-scrollable-element > .scrollbar > .slider {
-            background: rgba(0, 255, 0, 0.3) !important;
-        }
-        
-        .monaco-scrollable-element:hover > .scrollbar > .slider {
-            background: rgba(0, 255, 0, 0.6) !important;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lua Editor</title>
+  <style>
+    html, body, #container {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    body {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      background-color: #1e1e1e;
+    }
+  </style>
 </head>
 <body>
-    <div id="container"></div>
+  <div id="container"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
-    <script>
-        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+  <!-- Monaco Editor -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+  <script>
+    require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
 
-        require(['vs/editor/editor.main'], function () {
-            const editor = monaco.editor.create(document.getElementById('container'), {
-                value: `-- Matrix Style Lua Editor
--- Green text on black background
-
-function hack_the_matrix()
-    print("Welcome to the Matrix...")
-    return "Neo"
+    require(['vs/editor/editor.main'], function () {
+      const editor = monaco.editor.create(document.getElementById('container'), {
+        value: `-- Lua Editor Example
+function greet(name)
+    print("Hello, " .. name)
 end
 
-local user = hack_the_matrix()
-print("Hello, " .. user)
+local user = "Neo"
+greet(user)`,
+        language: 'lua',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        fontSize: 14,
+        fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+        lineHeight: 20,
+        minimap: {
+          enabled: true
+        },
+        scrollBeyondLastLine: false,
+        wordWrap: 'on',
+        renderLineHighlight: 'line',
+        selectionHighlight: false,
+        occurrencesHighlight: false,
+        renderWhitespace: 'none',
+        renderControlCharacters: false,
+        hideCursorInOverviewRuler: true,
+        overviewRulerBorder: false,
+        padding: {
+          top: 20,
+          bottom: 20
+        }
+      });
 
--- Classic Lua patterns
-local numbers = {1, 0, 1, 0, 1}
-for i, bit in ipairs(numbers) do
-    if bit == 1 then
-        print("SYSTEM ONLINE")
-    else
-        print("SYSTEM OFFLINE")
-    end
-end
+      // Add basic Lua autocomplete suggestions
+      monaco.languages.registerCompletionItemProvider('lua', {
+        provideCompletionItems: () => {
+          const suggestions = [
+            {
+              label: 'function',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'function ${1:name}()\n\t$0\nend',
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            },
+            {
+              label: 'local',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'local ',
+            },
+            {
+              label: 'print',
+              kind: monaco.languages.CompletionItemKind.Function,
+              insertText: 'print($1)',
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            },
+            {
+              label: 'if',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'if ${1:condition} then\n\t$0\nend',
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            }
+          ];
+          return { suggestions: suggestions };
+        }
+      });
 
--- Function with multiple returns
-function get_access_codes()
-    return "ZION", "MATRIX", 2199
-end
+      // Optional: Ctrl+S logs the code
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function () {
+        const code = editor.getValue();
+        console.log("Saved code:", code);
+      });
 
-local location, system, year = get_access_codes()
-print("Location: " .. location .. " | System: " .. system .. " | Year: " .. year)`,
-                language: 'lua',
-                theme: 'vs-dark',
-                automaticLayout: true,
-                fontSize: 14,
-                fontFamily: 'Consolas, Monaco, "Courier New", monospace',
-                lineHeight: 20,
-                minimap: {
-                    enabled: false
-                },
-                scrollBeyondLastLine: false,
-                wordWrap: 'on',
-                renderLineHighlight: 'line',
-                selectionHighlight: false,
-                occurrencesHighlight: false,
-                renderWhitespace: 'none',
-                renderControlCharacters: false,
-                hideCursorInOverviewRuler: true,
-                overviewRulerBorder: false,
-                scrollbar: {
-                    vertical: 'auto',
-                    horizontal: 'auto',
-                    verticalScrollbarSize: 10,
-                    horizontalScrollbarSize: 10
-                },
-                padding: {
-                    top: 20,
-                    bottom: 20
-                }
-            });
-
-            // Handle window resize
-            window.addEventListener('resize', () => {
-                editor.layout();
-            });
-
-            // Optional: Add keyboard shortcuts
-            editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function() {
-                const code = editor.getValue();
-                console.log('Matrix code saved:', code);
-            });
-        });
-    </script>
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        editor.layout();
+      });
+    });
+  </script>
 </body>
 </html>
