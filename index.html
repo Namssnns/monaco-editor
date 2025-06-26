@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lua Editor - Light Theme</title>
+  <title>Lua Editor - Blue Line Numbers</title>
   <style>
     html, body, #container {
       margin: 0;
@@ -17,9 +17,9 @@
       background-color: white;
     }
 
-    /* Make line numbers blue */
+    /* Blue line numbers */
     .monaco-editor .margin .line-numbers {
-      color: #007acc !important; /* Visual Studio blue */
+      color: #007acc !important;
     }
   </style>
 </head>
@@ -40,7 +40,7 @@ end
 local user = "Neo"
 greet(user)`,
         language: 'lua',
-        theme: 'vs', // Light theme
+        theme: 'vs', // Monaco light theme
         automaticLayout: true,
         fontSize: 14,
         lineHeight: 20,
@@ -51,45 +51,6 @@ greet(user)`,
         padding: { top: 20, bottom: 20 }
       });
 
-      // Register basic Lua autocomplete
-      monaco.languages.registerCompletionItemProvider('lua', {
-        provideCompletionItems: () => {
-          const keywords = [
-            "and", "break", "do", "else", "elseif", "end", "false", "for", "function",
-            "goto", "if", "in", "local", "nil", "not", "or", "repeat", "return",
-            "then", "true", "until", "while"
-          ];
-
-          const functions = [
-            "print", "ipairs", "pairs", "next", "tonumber", "tostring", "type",
-            "table.insert", "table.remove", "math.random", "string.sub"
-          ];
-
-          const suggestions = [
-            ...keywords.map(word => ({
-              label: word,
-              kind: monaco.languages.CompletionItemKind.Keyword,
-              insertText: word
-            })),
-            ...functions.map(fn => ({
-              label: fn,
-              kind: monaco.languages.CompletionItemKind.Function,
-              insertText: fn + '($1)',
-              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
-            }))
-          ];
-
-          return { suggestions };
-        }
-      });
-
-      // Optional save shortcut
-      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function () {
-        const code = editor.getValue();
-        console.log("Saved Lua code:", code);
-      });
-
-      // Resize handler
       window.addEventListener('resize', () => editor.layout());
     });
   </script>
