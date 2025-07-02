@@ -2,14 +2,51 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Ace Editor - Lua</title>
+  <title>Ace Editor - Tabs</title>
   <style>
-    html, body {
-      height: 100%;
+    body, html {
       margin: 0;
-      overflow: hidden;
-      background: white;
+      height: 100%;
+      background: #1e1e1e;
+      font-family: sans-serif;
+      color: white;
     }
+
+
+    
+      .ace_editor {
+      background-color: white !important;
+      color: black !important;
+    }
+
+    .tab {
+    background-color: transparent !important;
+      color: black !important;
+      padding: 5px 10px;
+      margin-right: 5px;
+      cursor: pointer;
+      border-radius: 5px 5px 0 0;
+      
+    }
+    
+        .ace_gutter {
+      background: white !important;
+      color: blue !important;
+    }
+
+    .ace_gutter-cell {
+      color: blue !important;
+    }
+    
+     #tab-bar {
+    display: flex;
+    background: #ffffff; 
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+  }
+
+
+    
 
     #editor {
       height: 100%;
@@ -18,33 +55,63 @@
       background-color: white;
       color: black;
     }
-
-    .ace_editor {
-      background-color: white !important;
-      color: black !important;
-    }
-
-    .ace_gutter {
-      background: white !important;
-      color: blue !important;
-    }
-
-    .ace_gutter-cell {
-      color: blue !important;
-    }
   </style>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ace.js"></script>
 </head>
 <body>
-  <div id="editor">print("Hello, Lua!")</div>
+
+  <div id="tab-bar"></div>
+  <div id="editor"></div>
 
   <script>
     const editor = ace.edit("editor");
     editor.setTheme("ace/theme/textmate"); 
     editor.session.setMode("ace/mode/lua");
     editor.setShowPrintMargin(false);
-    window.getCode = () => editor.getValue();
-    window.setCode = (val) => editor.setValue(val, -1);
+
+    const tabs = {};
+    let currentTab = null;
+
+    function createTab(name, initialCode = "") {
+      const tabId = "tab_" + name;
+
+      // Save old tab content
+      if (currentTab) tabs[currentTab] = editor.getValue();
+
+      tabs[tabId] = initialCode;
+      currentTab = tabId;
+
+      const tabButton = document.createElement("div");
+      tabButton.className = "tab active";
+      tabButton.innerText = name;
+      tabButton.dataset.tabId = tabId;
+
+      // Deactivate other tabs
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      document.getElementById("tab-bar").appendChild(tabButton);
+
+      editor.setValue(initialCode, -1);
+      tabButton.classList.add("active");
+
+      tabButton.addEventListener("click", () => {
+  
+        if (currentTab) {
+          tabs[currentTab] = editor.getValue();
+        }
+
+        currentTab = tabId;
+        editor.setValue(tabs[tabId], -1);
+
+        document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+        tabButton.classList.add("active");
+      });
+    }
+
+    // Example usage
+    createTab("Script1", 'print("Script 1")');
+    createTab("Script2", 'print("Script 2")');
   </script>
+
 </body>
 </html>
