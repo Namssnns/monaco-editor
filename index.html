@@ -42,6 +42,7 @@
     const editor = ace.edit("editor");
     editor.setTheme("ace/theme/textmate"); 
     editor.session.setMode("ace/mode/lua");
+    editor.setShowPrintMargin(false);
     window.getCode = () => editor.getValue();
     window.setCode = (val) => editor.setValue(val, -1);
   </script>
