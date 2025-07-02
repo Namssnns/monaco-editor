@@ -1,151 +1,45 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Ace Editor - Tabs</title>
-    <style>
-      body,
-      html {
-        margin: 0;
-        height: 100%;
-        font-family: sans-serif;
-        overflow: hidden;
-      }
-
-      #container {
-        height: 100%;
-        width: 100%;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-      }
-
-      #tab-bar {
-        background: white;
-        padding: 5px;
-        display: flex;
-        border-bottom: 1px solid #ccc;
-        flex-shrink: 0;
-      }
-
-      .tab {
-        background-color: transparent !important;
-        color: black !important;
-        padding: 5px 10px;
-        margin-right: 5px;
-        cursor: pointer;
-        border-radius: 5px 5px 0 0;
-        display: flex;
-        align-items: center;
-      }
-
-      .tab.active {
-        background: white;
-        color: blue !important;
-      }
-
-      #editor-container {
-        flex-grow: 1;
-        min-height: 1200px;
-      }
-
-      #editor {
-        height: 100%;
-        width: 100%;
-        font-size: 14px;
-        background-color: white;
-        color: black;
-      }
-
-      .ace_editor {
-        background-color: white !important;
-        color: black !important;
-      }
-
-      .ace_gutter {
-        background: white !important;
-        color: blue !important;
-      }
-
-      .ace_gutter-cell {
-        color: blue !important;
-      }
-
-      .tab span.close-btn {
-        margin-left: 8px;
-        cursor: pointer;
-        color: red;
-        font-weight: bold;
-        user-select: none;
-      }
-    </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ace.js"></script>
-  </head>
-  <body>
-    <div id="container">
-      <div id="tab-bar"></div>
-      <div id="editor-container">
-        <div id="editor">print("Hello, Lua!")</div>
-      </div>
-    </div>
-    <script>
-      const editor = ace.edit("editor");
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ace Editor - Tabs</title><style>body,html{margin:0;height:100%;font-family:sans-serif;overflow:hidden}#container{height:100%;width:100%;overflow-y:auto;display:flex;flex-direction:column}#tab-bar{background:#fff;padding:5px;display:block;border-bottom:1px solid #ccc;overflow-x:auto;white-space:nowrap;flex-shrink:0;scrollbar-width:thin}.tab{display:inline-block;vertical-align:middle;background-color:transparent!important;color:#000!important;padding:5px 10px;margin-right:5px;cursor:pointer;border-radius:5px 5px 0 0;min-width:80px;max-width:180px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.tab.active{background:#fff;color:#00f!important}#editor-container{flex-grow:1;min-height:1200px}#editor{height:100%;width:100%;font-size:14px;background-color:#fff;color:#000}.ace_editor{background-color:#fff!important;color:#000!important}.ace_gutter{background:#fff!important;color:#00f!important}.ace_gutter-cell{color:#00f!important}.tab span.close-btn{margin-left:8px;cursor:pointer;color:#000;font-weight:700;user-select:none}</style><script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ace.js"></script></head><body><div id="container"><div id="tab-bar"></div><div id="editor-container"><div id="editor">print("Hello, Lua!")</div></div></div><script>const editor = ace.edit("editor");
       editor.setTheme("ace/theme/textmate");
       editor.session.setMode("ace/mode/lua");
       editor.setShowPrintMargin(false);
-
       const tabs = {};
       let currentTab = null;
 
       function createTab(name, initialCode = "") {
         const tabId = "tab_" + name;
-
         if (currentTab) tabs[currentTab] = editor.getValue();
-
         tabs[tabId] = initialCode;
         currentTab = tabId;
-
         const tabButton = document.createElement("div");
         tabButton.className = "tab active";
         tabButton.dataset.tabId = tabId;
-
         const tabText = document.createElement("span");
         tabText.innerText = name;
         tabButton.appendChild(tabText);
-
         const closeBtn = document.createElement("span");
         closeBtn.className = "close-btn";
         closeBtn.innerText = "×";
         closeBtn.title = "Close tab";
         tabButton.appendChild(closeBtn);
-
         document.querySelectorAll(".tab").forEach((tab) => tab.classList.remove("active"));
         document.getElementById("tab-bar").appendChild(tabButton);
-
         editor.setValue(initialCode, -1);
         tabButton.classList.add("active");
-
         updateCloseButtonsVisibility();
-
         tabText.addEventListener("click", () => {
           if (currentTab) {
             tabs[currentTab] = editor.getValue();
           }
           currentTab = tabId;
           editor.setValue(tabs[tabId], -1);
-
           document.querySelectorAll(".tab").forEach((tab) => tab.classList.remove("active"));
           tabButton.classList.add("active");
         });
-
         closeBtn.addEventListener("click", (e) => {
           e.stopPropagation();
-
           delete tabs[tabId];
           tabButton.remove();
-
           renameTabsSequentially();
-
           if (currentTab === tabId) {
             const remainingTabs = Object.keys(tabs);
             if (remainingTabs.length > 0) {
@@ -159,15 +53,13 @@
               createTab("Tab 1", 'print("Hello World")');
             }
           }
-
           updateCloseButtonsVisibility();
         });
       }
 
       function updateCloseButtonsVisibility() {
         const allTabs = Array.from(document.querySelectorAll("#tab-bar .tab")).filter(
-          (t) => t.innerText !== "+"
-        );
+          (t) => t.innerText !== "+");
         allTabs.forEach((tab) => {
           const closeBtn = tab.querySelector(".close-btn");
           if (allTabs.length === 1) {
@@ -180,67 +72,51 @@
 
       function renameTabsSequentially() {
         const allTabs = Array.from(document.querySelectorAll("#tab-bar .tab")).filter(
-          (t) => t.innerText !== "+"
-        );
+          (t) => t.innerText !== "+");
         const newTabs = {};
         allTabs.forEach((tabButton, index) => {
           const oldTabId = tabButton.dataset.tabId;
           const newIndex = index + 1;
           const newName = "Tab " + newIndex;
           const newTabId = "tab_" + newName;
-
           const tabText = tabButton.querySelector("span:first-child");
           tabText.innerText = newName;
-
           tabButton.dataset.tabId = newTabId;
-
           newTabs[newTabId] = tabs[oldTabId];
-
           if (currentTab === oldTabId) {
             currentTab = newTabId;
           }
         });
-
         Object.keys(tabs).forEach((key) => delete tabs[key]);
         Object.assign(tabs, newTabs);
       }
 
       function getNextTabName() {
         const usedNumbers = new Set();
-
         Object.keys(tabs).forEach((tabId) => {
           const match = tabId.match(/^tab_Tab (\d+)$/);
           if (match) {
             usedNumbers.add(parseInt(match[1], 10));
           }
         });
-
         let i = 1;
         while (usedNumbers.has(i)) {
           i++;
         }
         return "Tab " + i;
       }
-
       const container = document.getElementById("container");
       container.addEventListener("scroll", () => editor.resize());
       window.addEventListener("resize", () => editor.resize());
-
       createTab("Tab 1", 'print("Hello World")');
-
       const plusTab = document.createElement("div");
       plusTab.className = "tab";
       plusTab.innerText = "+";
       plusTab.style.fontWeight = "bold";
       plusTab.style.userSelect = "none";
-
       plusTab.addEventListener("click", () => {
         const newTabName = getNextTabName();
         createTab(newTabName, 'print("Hello World")');
         document.getElementById("tab-bar").appendChild(plusTab);
       });
-
-      document.getElementById("tab-bar").appendChild(plusTab);
-    </script>
-  </body>
-</html>
+      document.getElementById("tab-bar").appendChild(plusTab);</script></body></html>
