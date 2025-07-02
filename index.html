@@ -1,59 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lua Editor - Blue Line Numbers</title>
+  <meta charset="utf-8">
+  <title>Ace Editor - Lua</title>
   <style>
-    html, body, #container {
+    html, body {
+      height: 100%;
       margin: 0;
-      padding: 0;
+      overflow: hidden;
+    }
+    #editor {
       height: 100%;
       width: 100%;
-    }
-
-    body {
-      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-      background-color: white;
-    }
-
-    /* Blue line numbers */
-    .monaco-editor .margin .line-numbers {
-      color: #007acc !important;
+      font-size: 14px;
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ace.js"></script>
 </head>
 <body>
-  <div id="container"></div>
+  <div id="editor">print("Hello, Lua!")</div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
   <script>
-    require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+    const editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/lua");
 
-    require(['vs/editor/editor.main'], function () {
-     window.editor = monaco.editor.create(document.getElementById('container'), {
-        value: `-- Lua Editor Example
-function greet(name)
-    print("Hello, " .. name)
-end
-
-local user = "Neo"
-greet(user)`,
-        language: 'lua',
-        theme: 'vs', // Monaco light theme
-        automaticLayout: true,
-        fontSize: 14,
-        lineHeight: 20,
-        fontFamily: 'Consolas, Monaco, "Courier New", monospace',
-        minimap: { enabled: true },
-        scrollBeyondLastLine: false,
-        wordWrap: 'on',
-        padding: { top: 20, bottom: 20 },
-        foreground: '#808080' // grey color
-      });
-
-      window.addEventListener('resize', () => editor.layout());
-    });
+    // Functions accessible from C#
+    window.getCode = () => editor.getValue();
+    window.setCode = (val) => editor.setValue(val, -1);
   </script>
 </body>
 </html>
