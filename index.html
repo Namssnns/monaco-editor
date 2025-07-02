@@ -8,11 +8,29 @@
       height: 100%;
       margin: 0;
       overflow: hidden;
+      background: white;
     }
+
     #editor {
       height: 100%;
       width: 100%;
       font-size: 14px;
+      background-color: white;
+      color: black;
+    }
+
+    .ace_editor {
+      background-color: white !important;
+      color: black !important;
+    }
+
+    .ace_gutter {
+      background: white !important;
+      color: blue !important;
+    }
+
+    .ace_gutter-cell {
+      color: blue !important;
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ace.js"></script>
@@ -22,10 +40,8 @@
 
   <script>
     const editor = ace.edit("editor");
-    editor.setTheme("ace/theme/monokai");
+    editor.setTheme("ace/theme/textmate"); 
     editor.session.setMode("ace/mode/lua");
-
-    // Functions accessible from C#
     window.getCode = () => editor.getValue();
     window.setCode = (val) => editor.setValue(val, -1);
   </script>
