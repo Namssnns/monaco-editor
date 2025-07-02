@@ -2,51 +2,50 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Ace Editor - Tabs</title>
+  <title>hi</title>
   <style>
     body, html {
       margin: 0;
       height: 100%;
-      background: #1e1e1e;
       font-family: sans-serif;
-      color: white;
+      overflow: hidden;
     }
 
+    #container {
+      height: 100%;
+      width: 100%;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
 
-    
-      .ace_editor {
-      background-color: white !important;
-      color: black !important;
+    #tab-bar {
+      background: white;
+      padding: 5px;
+      display: flex;
+      border-bottom: 1px solid #ccc;
+      flex-shrink: 0;
     }
 
     .tab {
-    background-color: transparent !important;
+      background-color: transparent !important;
       color: black !important;
       padding: 5px 10px;
       margin-right: 5px;
       cursor: pointer;
       border-radius: 5px 5px 0 0;
-      
     }
     
-        .ace_gutter {
-      background: white !important;
-      color: blue !important;
+   .tab.active {
+      background: white;
+      color: blue  !important;
+ 
     }
 
-    .ace_gutter-cell {
-      color: blue !important;
+    #editor-container {
+      flex-grow: 1;
+      min-height: 1200px; 
     }
-    
-     #tab-bar {
-    display: flex;
-    background: #ffffff; 
-    padding: 5px;
-    border-bottom: 1px solid #ccc;
-  }
-
-
-    
 
     #editor {
       height: 100%;
@@ -55,18 +54,36 @@
       background-color: white;
       color: black;
     }
+
+    .ace_editor {
+      background-color: white !important;
+      color: black !important;
+    }
+
+    .ace_gutter {
+      background: white !important;
+      color: blue !important;
+    }
+
+    .ace_gutter-cell {
+      color: blue !important;
+    }
   </style>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.14/ace.js"></script>
 </head>
 <body>
 
-  <div id="tab-bar"></div>
-  <div id="editor"></div>
+  <div id="container">
+    <div id="tab-bar"></div>
+    <div id="editor-container">
+      <div id="editor">print("Hello, Lua!")</div>
+    </div>
+  </div>
 
   <script>
     const editor = ace.edit("editor");
-    editor.setTheme("ace/theme/textmate"); 
+    editor.setTheme("ace/theme/textmate");
     editor.session.setMode("ace/mode/lua");
     editor.setShowPrintMargin(false);
 
@@ -76,7 +93,6 @@
     function createTab(name, initialCode = "") {
       const tabId = "tab_" + name;
 
-      // Save old tab content
       if (currentTab) tabs[currentTab] = editor.getValue();
 
       tabs[tabId] = initialCode;
@@ -87,7 +103,6 @@
       tabButton.innerText = name;
       tabButton.dataset.tabId = tabId;
 
-      // Deactivate other tabs
       document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
       document.getElementById("tab-bar").appendChild(tabButton);
 
@@ -95,7 +110,6 @@
       tabButton.classList.add("active");
 
       tabButton.addEventListener("click", () => {
-  
         if (currentTab) {
           tabs[currentTab] = editor.getValue();
         }
@@ -108,9 +122,12 @@
       });
     }
 
-    // Example usage
-    createTab("Script1", 'print("Script 1")');
-    createTab("Script2", 'print("Script 2")');
+    const container = document.getElementById("container");
+    container.addEventListener("scroll", () => editor.resize());
+    window.addEventListener("resize", () => editor.resize());
+
+    createTab("Script1", 'print("Hello World1!")');
+    createTab("Script2", 'print("Hello World2!"")');
   </script>
 
 </body>
